@@ -1,0 +1,110 @@
+% This file was created (at least in part) by the script ParseMdtoLatex by Louis du Plessis
+% (Available from https://github.com/taming-the-beast)
+
+\documentclass[11pt]{article}
+\input{preamble}
+
+% Add your bibtex library here
+\addbibresource{refs}
+
+
+%%%%%%%%%%%%%%%%%%%%
+% Do NOT edit this %
+%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\renewcommand{\headrulewidth}{0.5pt}
+\headsep = 20pt
+\lhead{ }
+\rhead{\textsc {BEAST v2 Tutorial}}
+\thispagestyle{plain}
+
+
+%%%%%%%%%%%%%%%%%%
+% Tutorial title %
+%%%%%%%%%%%%%%%%%%
+\begin{center}
+
+	% Enter the name of your tutorial here
+	\textbf{\LARGE Tutorial using BEAST v2.5.2}\\\vspace{2mm}
+
+	% Enter a short description of your tutorial here
+	\textbf{\textcolor{mycol}{\Large Fast relaxed clock model}}\\
+
+	\vspace{4mm}
+
+	% Enter the names of all the authors here
+	{\Large {\em Rong Zhang and Alexei Drummond}}
+\end{center}
+
+This tutorial introduces ConstantDistance operator to improve the efficiency BEAST analysis under relaxed clock models. The proposal kernel in the presented operator changes evolutionary rates and divergence times at the same time, under the constraint that the implied genetic distances remain constant. Specifically, the proposal operates on the divergence time of an internal node and the three adjacent branch rates. For the root of a phylogenetic tree, there are three strategies included, named Simple Distance, Small Pulley and Big Pulley. The descriptions below will provide guidance step by step to estimate evolutionary rates and divergence times using BEAST2 software.
+
+%%%%%%%%%%%%%%%%%
+% Tutorial body %
+%%%%%%%%%%%%%%%%%
+
+\section{Introduction}\label{introduction}
+Bayesian phylogenetic inference via MCMC is computationally intensive for large data sets. Two approaches to improve efficiency are (i) by making faster likelihood calculations, and (ii) by incorporating more effective proposal kernels. 
+
+\section{Required programs}\label{programs}
+\begin{itemize}
+\item BEAST2 - Bayesian Evolutionary Analysis Sampling Trees
+\item BEAUti - Bayesian Evolutionary Analysis Utility
+\end{itemize}
+
+You may also need the following necessary programs to analyse the output files of BEAST2.
+\begin{itemize}
+\item TreeAnnotator
+\item Tracer
+\end{itemize}
+
+\section{Practical analysis}\label{analysis}
+\subsection{Set up BEAUti}
+\begin{enumerate}
+\item \lstinline!2!
+\end{enumerate}
+
+\subsection{Run XML file in BEAST2}
+
+\subsection{Analyse results}
+
+
+\section{Acknowledgment}\label{acknowledgment}
+
+The content of this tutorial is based on the \href{https://github.com/CompEvol/MultiTypeTree/wiki/Beginner's-Tutorial-(short-version)}{StructuredCoalescent tutorial} by Tim Vaughan.
+
+\section{Useful Links}\label{useful-links}
+\begin{itemize}
+\item
+  \href{http://www.beast2.org/book.html}{Bayesian Evolutionary Analysis
+  with BEAST 2} \citep{BEAST2book2014}
+\item
+  \href{https://github.com/denisekuehnert/bdmm}{Multi-type birth-death
+  process package} \citep{Kuhnert2016}
+\item
+  BEAST 2 website and documentation: \url{http://www.beast2.org/}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% Tutorial disclaimer %
+%%%%%%%%%%%%%%%%%%%%%%%
+% Please do not change the license
+% Add the author names and relevant links
+% Add any other aknowledgments here
+\href{http://creativecommons.org/licenses/by/4.0/}{\includegraphics[scale=0.8]{figures/ccby.pdf}} This tutorial was written by Rong Zhang and   Alexei Drummond for \href{https://taming-the-beast.github.io}{Taming the BEAST} and is licensed under a \href{http://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International License}. 
+
+%%%%%%%%%%%%%%%%%%%%
+% Do NOT edit this %
+%%%%%%%%%%%%%%%%%%%%
+Version dated: \today
+
+
+
+\newpage 
+%%%%%%%%%%%%%%%%
+%  REFERENCES  %
+%%%%%%%%%%%%%%%%
+
+\printbibliography[heading=relevref]
+
+
+\end{document}
