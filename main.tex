@@ -76,19 +76,36 @@ This program summaries trees in .tree file based on posterior distribution and g
 \subsection{Set up BEAUti}
 \begin{enumerate}
 \item Start BEAUti
+
 \item Import alignment
+
+%\begin{figure}
+%    \centering
+%    \includegraphics[width=0.750000\textwidth]{figures/1-install-bdmm.png}
+%    \caption{Install bdmm.}
+%    \label{fig:install-bdmm}
+%\end{figure}
+
 \item Specify clock model
+
+To improve the efficiency, we will use "Fast relaxed clock model". 
 \item Specify priors
+
+Under the fast relaxed clock model, the mandatory prior distribution includes prior on evolutionary rates. 
 \item Specify operators
+
+To choose the ConstantDistance operator, we will need to set up some configurations. In the operators panel (click "View" -> "Show Operators panel"), we will see 
 \item Set up MCMC chain
 \end{enumerate}
 
 \subsection{Run XML file in BEAST2}
 \begin{enumerate}
 \item Start BEAST2
+\item Input XML file
 \end{enumerate}
 
 \subsection{Analyse results}
+After running BEAST2, three files are generated under directory. 
 \begin{enumerate}
 \item Analyse .log file
 \item Analyse .trees file
