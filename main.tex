@@ -43,30 +43,56 @@ This tutorial introduces ConstantDistance operator to improve the efficiency BEA
 %%%%%%%%%%%%%%%%%
 
 \section{Introduction}\label{introduction}
-Bayesian phylogenetic inference via MCMC is computationally intensive for large data sets. Two approaches to improve efficiency are (i) by making faster likelihood calculations, and (ii) by incorporating more effective proposal kernels. 
+Bayesian phylogenetic inference via MCMC is computationally intensive for large data sets. Two approaches to improve efficiency are (i) by making faster likelihood calculations, and (ii) by incorporating more effective proposal kernels. However, the overall efficiency of the sampling process also depends strongly on the construction of the proposal mechanism. An effective proposal mechanism is proficient at exploring the posterior distribution, and can do so with fewer steps in the MCMC chain. Therefore fewer likelihood calculations are required, since each step in the chain requires a likelihood calculation.
+
+The operator presented in this tutorial, ConstantDistance operator,  is based on an uncorrelated relaxed clock model, in which the rates vary from branch to branch, drawn independently and identically from a given prior distribution, such as the log-normal distribution (\cite{drummond2006relaxed}). As a result, the rates can vary markedly between parent and child branches.
+
+More specifically, the presented operator searches within a subspace of constant genetic distances. Namely, the proposed operator changes both divergence times of nodes and neighbouring branch rates so that implied genetic distances are not changed. For time-reversible substitution models the phylogenetic likelihood will also be unchanged under this operation.
 
 \section{Required programs}\label{programs}
 \begin{itemize}
 \item BEAST2 - Bayesian Evolutionary Analysis Sampling Trees
+
+BEAST2 is a software platform for phylogenetic analysis based on Bayesian MCMC algorithms. This tutorial is written for BEAST v2.5.0 (\cite{bouckaert2014beast}).
 \item BEAUti - Bayesian Evolutionary Analysis Utility
+
+BEAUti is a graphical user interface tool to generate XML files that BEAST2 takes as input. It provides users with configuration options that are necessary for Bayesian phylogenetic analysis, such as prior distributions of parameter and various evolutionary models.
 \end{itemize}
 
-You may also need the following necessary programs to analyse the output files of BEAST2.
+You may also need the following programs to analyse the output files of BEAST2.
 \begin{itemize}
-\item TreeAnnotator
 \item Tracer
+
+This program analyses .log file which records the sampled states in Bayesian MCMC chain by BEAST2 (\url{http://tree.bio.ed.ac.uk/software/tracer}). It displays distributions of sampled parameters and calculates Effective Sample Size (ESS) automatically.
+\item FigTree
+
+This program reads .trees file and visualises trees sampled during MCMC chain (\url{http://tree.bio.ed.ac.uk/software/figtree}). The users can designate phylogenetic properties to show on the plotted trees, such as node ages, rates, branch length and so on.
+\item TreeAnnotator
+
+This program summaries trees in .tree file based on posterior distribution and gives a maximum clade credibility tree (\url{https://beast2.blogs.auckland.ac.nz/treeannotator/}). 
 \end{itemize}
 
 \section{Practical analysis}\label{analysis}
 \subsection{Set up BEAUti}
 \begin{enumerate}
-\item \lstinline!2!
+\item Start BEAUti
+\item Import alignment
+\item Specify clock model
+\item Specify priors
+\item Specify operators
+\item Set up MCMC chain
 \end{enumerate}
 
 \subsection{Run XML file in BEAST2}
+\begin{enumerate}
+\item Start BEAST2
+\end{enumerate}
 
 \subsection{Analyse results}
-
+\begin{enumerate}
+\item Analyse .log file
+\item Analyse .trees file
+\end{enumerate}
 
 \section{Acknowledgment}\label{acknowledgment}
 
