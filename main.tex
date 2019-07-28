@@ -36,7 +36,7 @@
 	{\Large {\em Rong Zhang and Alexei Drummond}}
 \end{center}
 
-This tutorial introduces ConstantDistance operator to improve the efficiency BEAST analysis under relaxed clock models. The proposal kernel in the presented operator changes evolutionary rates and divergence times at the same time, under the constraint that the implied genetic distances remain constant. Specifically, the proposal operates on the divergence time of an internal node and the three adjacent branch rates. For the root of a phylogenetic tree, there are three strategies included, named Simple Distance, Small Pulley and Big Pulley. The descriptions below will provide guidance step by step to estimate evolutionary rates and divergence times using BEAST2 software.
+This tutorial introduces ConstantDistance operator to improve the efficiency of BEAST analysis under relaxed clock models. The proposal kernel in the presented operator changes evolutionary rates and divergence times at the same time, under the constraint that the implied genetic distances remain constant. Specifically, the proposal operates on the divergence time of an internal node and the three adjacent branch rates. For the root of a phylogenetic tree, there are three strategies included, named Simple Distance, Small Pulley and Big Pulley. The descriptions below will provide guidance step by step to estimate evolutionary rates and divergence times using BEAST2 software.
 
 %%%%%%%%%%%%%%%%%
 % Tutorial body %
@@ -45,9 +45,11 @@ This tutorial introduces ConstantDistance operator to improve the efficiency BEA
 \section{Introduction}\label{introduction}
 Bayesian phylogenetic inference via MCMC is computationally intensive for large data sets. Two approaches to improve efficiency are (i) by making faster likelihood calculations, and (ii) by incorporating more effective proposal kernels. However, the overall efficiency of the sampling process also depends strongly on the construction of the proposal mechanism. An effective proposal mechanism is proficient at exploring the posterior distribution, and can do so with fewer steps in the MCMC chain. Therefore fewer likelihood calculations are required, since each step in the chain requires a likelihood calculation.
 
-The operator presented in this tutorial, ConstantDistance operator,  is based on an uncorrelated relaxed clock model, in which the rates vary from branch to branch, drawn independently and identically from a given prior distribution, such as the log-normal distribution (\cite{drummond2006relaxed}). As a result, the rates can vary markedly between parent and child branches.
+The operator presented in this tutorial, ConstantDistance operator, is based on an uncorrelated relaxed clock model, in which the rates vary from branch to branch, drawn independently and identically from a given prior distribution, such as the log-normal distribution (\cite{drummond2006relaxed}). As a result, the rates can vary markedly between parent and child branches.
 
 More specifically, the presented operator searches within a subspace of constant genetic distances. Namely, the proposed operator changes both divergence times of nodes and neighbouring branch rates so that implied genetic distances are not changed. For time-reversible substitution models the phylogenetic likelihood will also be unchanged under this operation.
+
+It is demonstrated that the proposed operator is able to improve the performance by giving better estimates and using less running time. Measured by effective samples per hour, the proposed operator is more than an order of magnitude faster than the current operators in BEAST2 on real and simulated data sets.
 
 \section{Required programs}\label{programs}
 \begin{itemize}
@@ -57,6 +59,7 @@ BEAST2 is a software platform for phylogenetic analysis based on Bayesian MCMC a
 \item BEAUti - Bayesian Evolutionary Analysis Utility
 
 BEAUti is a graphical user interface tool to generate XML files that BEAST2 takes as input. It provides users with configuration options that are necessary for Bayesian phylogenetic analysis, such as prior distributions of parameter and various evolutionary models.
+
 \end{itemize}
 
 You may also need the following programs to analyse the output files of BEAST2.
@@ -73,47 +76,96 @@ This program summaries trees in .tree file based on posterior distribution and g
 \end{itemize}
 
 \section{Practical analysis}\label{analysis}
+\subsection{Set up operator package}
+Currently, the operator is developed as a package of BEAST2. Before the analysis, firstly download \href{https://github.com/Rong419/ConstantDistanceOperator.git}{ConstantDistance Operator} from Github repository and set up the dependency on BEAST2.
+
 \subsection{Set up BEAUti}
 \begin{enumerate}
 \item Start BEAUti
 
-\item Import alignment
+After setting the main class as ``beast.app.beauti.Beauti" in configuration, you will see the interface of BEAUti, as is shown in Fig.\ref{fig:start-beauti}.
+\begin{figure}
+\centering
+\includegraphics[width=0.750000\textwidth]{figures/beauti_start.png}
+\caption{beati start}
+ \label{fig:start-beauti}
+\end{figure}
 
-%\begin{figure}
-%    \centering
-%    \includegraphics[width=0.750000\textwidth]{figures/1-install-bdmm.png}
-%    \caption{Install bdmm.}
-%    \label{fig:install-bdmm}
-%\end{figure}
+\item Import alignment
+Click on ``File -> Import Alignment", and than choose the .nex data file. Here we import primates.nex as an example (Fig.\ref{fig:import-alignment}).
+\begin{figure}
+\centering
+\includegraphics[width=0.750000\textwidth]{figures/import_alignment.png}
+\caption{import alignment}
+ \label{fig:import-alignment}
+\end{figure}
 
 \item Specify clock model
 
-To improve the efficiency, we will use "Fast relaxed clock model". 
+To use the operator, we assume an uncorrelated relaxed clock model. Specifically, as is illustrated in Fig.\ref{fig: clock model}, we need to click on "Clock Model" panel and then choose "Fast Relaxed Clock Log Normal" in the drop-down menu.
+\begin{figure}
+\centering
+\includegraphics[width=0.750000\textwidth]{figures/clockmodel.pdf}
+\caption{specify clock model}
+ \label{fig: clock model}
+\end{figure}
+
 \item Specify priors
 
-Under the fast relaxed clock model, the mandatory prior distribution includes prior on evolutionary rates. 
+Under the selected clock model, the mandatory prior distribution includes prior on evolutionary rates (Log Normal distribution) and hyper prior on the standard deviation of the Log Normal distribution, as is shown in the red rectangles in Fig.\ref{fig: prior}.
+\begin{figure}
+\centering
+\includegraphics[width=0.750000\textwidth]{figures/prior.pdf}
+\caption{specify prior}
+ \label{fig: prior}
+\end{figure}
+
 \item Specify operators
+In the operators panel (click on "View" -> "Show Operators panel"), the ConstantDistance operator includes one operator on internal nodes and three operators on root, as can be seen in the red rectangle in Fig.\ref{fig: operator-panel}. Based on different data sets, you are able to specify different weights on the corresponding operators, instead of using default configuration.  
+\begin{figure}
+\centering
+\includegraphics[width=0.750000\textwidth]{figures/operator_panel.png}
+\caption{specify operator}
+ \label{fig: operator-panel}
+\end{figure}
 
-To choose the ConstantDistance operator, we will need to set up some configurations. In the operators panel (click "View" -> "Show Operators panel"), we will see 
 \item Set up MCMC chain
+
+As is shown in Fig.\ref{fig: trace-log}, you are able to confirm that the rates and standard deviations will be correctly logged in .log file. For different analysis requirements, you are also able to make modifications by click on ``edit" botton.
+\begin{figure}
+\centering
+\includegraphics[width=0.750000\textwidth]{figures/trace_log.png}
+\caption{specify trace logger}
+\label{fig: trace-log}
+\end{figure}
+
+\item Save specifications
+
+Finally, after all specifications are done (e.g., ``Partitions", ``Tip Dates", "Site Model"), you will need to save the configurations as .xml file by clicking on "File -> Save" and choosing the path (Fig.\ref{fig: save-xml}).
+\begin{figure}
+\centering
+\includegraphics[width=0.500000\textwidth]{figures/save_xml.png}
+\caption{save as .xml file}
+\label{fig: save-xml}
+\end{figure}
+
 \end{enumerate}
 
-\subsection{Run XML file in BEAST2}
-\begin{enumerate}
-\item Start BEAST2
-\item Input XML file
-\end{enumerate}
+\subsection{Run XML in BEAST2}
+To run the analysis, you will need to specify main class as ``beast.app.beastapp.BeastMain" and use ``ConstantDistanceOperator" as module in configuration. Then, choose the previously generated .xml file, as is shown in Fig.\ref{fig: input-xml}.
+\begin{figure}
+\centering
+\includegraphics[width=0.500000\textwidth]{figures/input_xml.png}
+\caption{input .xml file}
+\label{fig: input-xml}
+\end{figure}
 
 \subsection{Analyse results}
-After running BEAST2, three files are generated under directory. 
-\begin{enumerate}
-\item Analyse .log file
-\item Analyse .trees file
-\end{enumerate}
+After running BEAST2, three files are generated under the working directory, such as ``primates.log", ``primates.trees" and ``primates\_MCMC.xml.state". By loading .log file in Tracer and .trees file in FigTree, you are able to analyse the results. 
 
 \section{Acknowledgment}\label{acknowledgment}
 
-The content of this tutorial is based on the \href{https://github.com/CompEvol/MultiTypeTree/wiki/Beginner's-Tutorial-(short-version)}{StructuredCoalescent tutorial} by Tim Vaughan.
+The content of this tutorial is based on the paper ``Improving the performance of Bayesian phylogenetic inference under relaxed clock models".
 
 \section{Useful Links}\label{useful-links}
 \begin{itemize}
@@ -133,7 +185,7 @@ The content of this tutorial is based on the \href{https://github.com/CompEvol/M
 % Please do not change the license
 % Add the author names and relevant links
 % Add any other aknowledgments here
-\href{http://creativecommons.org/licenses/by/4.0/}{\includegraphics[scale=0.8]{figures/ccby.pdf}} This tutorial was written by Rong Zhang and   Alexei Drummond for \href{https://taming-the-beast.github.io}{Taming the BEAST} and is licensed under a \href{http://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International License}. 
+\href{http://creativecommons.org/licenses/by/4.0/}{\includegraphics[scale=0.8]{figures/ccby.pdf}} This tutorial was written by Rong Zhang and Alexei Drummond for \href{https://taming-the-beast.github.io}{Taming the BEAST} and is licensed under a \href{http://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International License}. 
 
 %%%%%%%%%%%%%%%%%%%%
 % Do NOT edit this %
